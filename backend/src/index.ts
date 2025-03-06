@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import http from "http";
+import { UserManager } from "./managers/UserManager";
 const express = require('express');
-const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -16,9 +16,13 @@ const io = new Server(server,{
 
 const userManager = new UserManager();
 
-io.on('connection', (socket : Socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('a user connected');
-  use
+  userManager.addUser("randomName", socket);
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    userManager.removeUser(socket.id);
+  })
 });
 
 server.listen(3000, () => {
